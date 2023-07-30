@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Media Player</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class='playlist-viewer-body'>
+	<main class="table">
+		<section class="table_head">
+			<h1>Current Queue</h1>
+		</section>
+		<section class="table_body">
+			<table>
+				<thead>
+					<tr>
+						<th>Index</th>
+						<th>Title</th>
+						<th>Artist</th>
+						<th>Album</th>
+						<th>Delete</th>
+					</tr>
+				</thead>
+				<tbody id='playlist-viewer'>
+				</tbody>
+			</table>
+		</section>
+	</main>
+</body>
+<script>
+	var tbl_bse = []
+	var already_tabled_list = false
+
+	function create_table(table_base, highlight_idx) {
+		let table = document.getElementById('playlist-viewer')
+		for (let row in table_base) {
+			let new_tr = document.createElement('tr')
+			new_tr.classList.add('JS-Generated')
+			let index_td = document.createElement('td')
+			index_td.classList.add('JS-Generated')
+
+			if (highlight_idx == row) {index_td.innerHTML = '▶️'}
+			else {index_td.innerHTML = parseInt(row)+1}
+
+			new_tr.appendChild(index_td)
+			for (column_idx in table_base[row]) {
+				let new_td = document.createElement('td')
+				new_td.classList.add('JS-Generated')
+				new_td.innerHTML = table_base[row][column_idx]
+				new_tr.appendChild(new_td)
+			}
+			let delete_td = document.createElement('td')
+			delete_td.innerHTML = "⛔"
+			delete_td.classList.add('JS-Generated')
+			delete_td.classList.add('td-delete-btn')
+			delete_td.addEventListener('click', () => {
+				pywebview.api.remove_from_playlist(row).then()
+			})
+			new_tr.appendChild(delete_td)
+
+			table.appendChild(new_tr)
+		}
+	}
+
+	function completed_every_song(original_data) {
+		if ((original_data.length == tbl_bse.length) && !already_tabled_list) {
+			pywebview.api.get_current_index().then((resp) => {
+				document.getElementById('loading-txt').remove()
+				create_table(tbl_bse, resp.index)
+			})
+			already_tabled_list = true
+			return
+		}
+		else {
+			setTimeout(completed_every_song, 10, original_data)
+			return
+		}
+	}
+
+	function update_window() {
+		var generated_elements = [...document.getElementsByClassName('JS-Generated')]
+		for (x in generated_elements) {
+			generated_elements[x].remove()
+		}
+		var loading_texts = [...document.getElementsByClassName('LOADING-TEXT-CONTAINER')]
+		for (x in loading_texts) {
+			loading_texts[x].remove()
+		}
+
+		let tee_arr = document.createElement('tr')
+		tee_arr.classList.add('LOADING-TEXT-CONTAINER')
+		tee_arr.id = 'loading-txt'
+		for (idx in [1, 2, 3, 4, 5]) {
+			if (idx == 0) {
+				let td = document.createElement('td')
+				let h_two = document.createElement('h2')
+				h_two.innerHTML = 'Loading Playlist ...'
+				td.appendChild(h_two)
+				tee_arr.appendChild(td)
+			} else {
+				tee_arr.appendChild(document.createElement('td'))
+			}
+		}
+		document.getElementById('playlist-viewer').appendChild(tee_arr)
+
+		tbl_bse = []
+		already_tabled_list = false
+
+		pywebview.api.return_playlist().then((resp) => {
+			var id_list = resp.data
+			for (id_index in id_list) {
+				/* Load Song Title */
+				pywebview.api.load_song_to_obj(id_list[id_index]).then((resp) => {
+					let title = resp.title
+					/* Load Artist Name */
+					pywebview.api.load_artist_to_obj(resp.artist_id).then((artist_resp) => {
+						let artist = artist_resp.name
+						/* Load Album Title */
+						pywebview.api.load_album_to_obj(resp.album_id).then((album_resp) => {
+							let album = album_resp.name
+							/* Add to table list */
+							tbl_bse.push([title, artist, album])
+							completed_every_song(id_list)
+						})
+					})
+				})
+
+			}
+		})
+	}
+
+	window.addEventListener('pywebviewready', update_window)
+</script>
+</html>

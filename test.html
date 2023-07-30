@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Test</title>
+	<style>
+		body {
+			background: #111;
+		}
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		.plus-menu {
+			color: ghostwhite;
+			width: 175px;
+			cursor: pointer;
+		}
+
+		.plus-menu > span {
+			display: block;
+			padding: 10px;
+			background-color: rgba(255, 255, 255, 0.3);
+		}
+
+		.plus-menu > span:hover {
+			color: black;
+			background-color: rgba(255, 255, 255, 0.8);
+		}
+
+		.plus-menu > span:nth-child(1) {
+			border-top-left-radius: 10px;
+			border-top-right-radius: 10px;
+		}
+
+		.plus-menu > span:nth-last-child(1) {
+			border-bottom-left-radius: 10px;
+			border-bottom-right-radius: 10px;
+		}
+
+		#menu-close {
+			background-color: rgba(255, 0, 0, 0.7);
+		}
+
+		#menu-close:hover {
+			background-color: rgba(255, 0, 0, 1);
+			color: white;
+		}
+	</style>
+</head>
+<body>
+	<div class="plus-menu">
+		<span>Add MP3 File to Queue</span>
+		<span>Add MP3 File to Queue</span>
+		<span>Add MP3 File to Queue</span>
+		<span>Add MP3 File to Queue</span>
+		<span id='menu-close'>Close</span>
+	</div>
+</body>
+</html>

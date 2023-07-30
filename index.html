@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Media Player</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+	<audio id='media'></audio>
+	<section class="main-app-body">
+		<section class="music-manager">
+			<section class="viewmode">
+				<span>Albums</span>
+				<span>Artists</span>
+				<span>Songs</span>
+				<span>Genres</span>
+			</section>
+			<section class="data" id='data-catalog'></section>
+		</section>
+		<section class="playlist-data">
+			<section class="songinfo">
+				<img src="" alt="Album Art" id='songinfo_art'>
+				<div class="songinfo_details">
+					<b><span id='song-title'>Untitled Track</span></b>
+					<span id='song-artist'>Unknown Artist</span>
+					<span id='song-album'>Unknown Album</span>
+				</div>
+			</section>
+			<section class="controls">
+				<div class="control-panel">
+					<button class='designer-button' id='play-btn'><img id='play-img' src="/icon.play"></button>
+					<button class='designer-button' id='stop-btn'><img src="/icon.stop"></button>
+					<button class='designer-button' id='back-btn'><img src="/icon.backward"></button>
+					<button class='designer-button' id='frwd-btn'><img src="/icon.forward"></button>
+					<button class='designer-button' id='plus-btn'><img src="/icon.plus"></button>
+				</div>
+				<section class="progress-bar-parent">
+					<div class="progress-bar" id='progress-bar'>
+						<div id="progress-blob"></div>
+					</div>
+				</section>
+			</section>
+			<section class="mini-controls">
+				<div class="volume-container">
+					<div class="bar">
+						<div class="bar-full"></div>
+						<div class="box"></div>
+					</div>
+				</div>
+				<div class="coolbox">
+					<input type="text" placeholder="Search" id='searchbox'>
+					<button class='designer-button' id='love-btn'><img src="/icon.heart-outline"></button>
+					<button class='designer-button' id='list-btn'>📃</button>
+				</div>
+			</section>
+		</section>
+	</section>
+	<div class="plus-menu" id="plus-menu">
+		<span id='add-mp3'>Add MP3 File to Queue</span>
+		<span id='menu-close'>Close</span>
+	</div>
+</body>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</html>
